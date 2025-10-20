@@ -52,16 +52,6 @@ if CLIENT then
         GAMEMODE.MapVoteActive = net.ReadBool()
     end)
 
-    function ChangePlayerModel(modelPath)
-        net.Start("RandomAsylum_ChangeModel")
-        net.WriteString(modelPath)
-        net.SendToServer()
-    end
-    
-    concommand.Add("ra_checkmymodel", function()
-        LocalPlayer():ChatPrint("Your model: " .. LocalPlayer():GetModel())
-    end)
-
     local whiteMat = Material("vgui/white")
 
     local function DrawShadowedText(text, font, x, y, color, alignX, alignY)
