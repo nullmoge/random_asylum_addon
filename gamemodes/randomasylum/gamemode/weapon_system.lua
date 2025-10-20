@@ -9,6 +9,17 @@ if SERVER then
         return true
     end
 
+    hook.Add("PlayerCanPickupWeapon", "RandomAsylum_CheckSWEP", function(ply, weapon)
+        local weaponClass = weapon:GetClass()
+        
+        if not weapons.Get(weaponClass) then
+            weapon:Remove()
+            return false
+        end
+        
+        return true
+    end)
+
     hook.Add("PlayerSpawn", "RandomAsylum_GiveWeapons", function(ply)
         ply:StripWeapons()
         ply:StripAmmo()
