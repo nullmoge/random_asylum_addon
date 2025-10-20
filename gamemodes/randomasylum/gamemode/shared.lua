@@ -11,6 +11,11 @@ GM.IsWaitingForPlayers = true
 GM.MinPlayers = 0
 
 function GM:Initialize()
+    if SERVER then
+        RunConsoleCommand("sbox_playershurtplayers", "1")
+        RunConsoleCommand("sbox_godmod", "0")
+        print("[Random Asylum] PVP damage enabled!")
+    end
     print("[Random Asylum] Gamemode loaded!")
 end
 
