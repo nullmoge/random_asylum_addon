@@ -9,6 +9,8 @@ GM.RoundStartTime = 0
 GM.RoundDuration = 0
 GM.IsWaitingForPlayers = true
 GM.MinPlayers = 0
+GM.MapVoteActive = false
+GM.ShowResultsUntil = 0
 
 function GM:Initialize()
     if SERVER then
@@ -21,4 +23,16 @@ end
 
 function GM:OnSpawnMenuOpen(ply)
     return false
+end
+
+if CLIENT then
+    function ChangePlayerModel(modelPath)
+        net.Start("RandomAsylum_ChangeModel")
+        net.WriteString(modelPath)
+        net.SendToServer()
+    end
+    
+    concommand.Add("ra_checkmymodel", function()
+        LocalPlayer():ChatPrint("Your model: " .. LocalPlayer():GetModel())
+    end)
 end
