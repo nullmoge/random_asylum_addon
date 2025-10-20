@@ -89,18 +89,26 @@ if CLIENT then
         local currentPlayers = GAMEMODE.CurrentPlayers or 0
         local minPlayers = GAMEMODE.MinPlayers or 1
 
+        if GAMEMODE.MapVoteActive then
+            local voteY = hudY
+            surface.SetDrawColor(255, 0, 0, 0)
+            surface.DrawRect(screenW / 2 - barWidth / 2 - 10, voteY - 5, barWidth + 20, barHeight + 10)
+            DrawShadowedText("Vote for the map", textFont, screenW / 2, voteY + 5, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            return
+        end
+
         if CurTime() < (GAMEMODE.ShowResultsUntil or 0) then
             local resultsY = screenH / 2 - 80
             surface.SetDrawColor(0, 0, 0, 220)
             surface.DrawRect(screenW / 2 - 250, resultsY - 15, 500, 105)
 
-            DrawShadowedText("Round Results", "Trebuchet24", screenW / 2, resultsY, Color(255, 215, 0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            DrawShadowedText("Round results", "Trebuchet24", screenW / 2, resultsY, Color(255, 215, 0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
             local killerText = (GAMEMODE.TopKiller and GAMEMODE.TopKiller.name or "Nobody") .. " — " .. (GAMEMODE.TopKiller and GAMEMODE.TopKiller.kills or 0) .. " kills"
-            DrawShadowedText("Top Killer: " .. killerText, "DermaDefaultBold", screenW / 2, resultsY + 40, Color(255, 100, 100, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            DrawShadowedText("Top killer: " .. killerText, "DermaDefaultBold", screenW / 2, resultsY + 40, Color(255, 100, 100, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
             local deatherText = (GAMEMODE.TopDeather and GAMEMODE.TopDeather.name or "Nobody") .. " — " .. (GAMEMODE.TopDeather and GAMEMODE.TopDeather.deaths or 0) .. " deaths"
-            DrawShadowedText("Lover of Deaths: " .. deatherText, "DermaDefaultBold", screenW / 2, resultsY + 70, Color(100, 255, 100, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            DrawShadowedText("Lover of deaths: " .. deatherText, "DermaDefaultBold", screenW / 2, resultsY + 70, Color(100, 255, 100, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
             return
         end
@@ -121,21 +129,14 @@ if CLIENT then
 
             DrawLoadingIcon(screenW / 2 - barWidth / 2 - 20, hudY + 5, 10, 200)
 
-            if not GAMEMODE.MapVoteActive and GAMEMODE.FunnyText then
+            if GAMEMODE.FunnyText then
                 DrawShadowedText(GAMEMODE.FunnyText, "DermaDefault", screenW / 2, screenH - 100, Color(200, 200, 200, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             end
-
-            if GAMEMODE.MapVoteActive then
-                local voteY = hudY + 70
-                surface.SetDrawColor(255, 0, 0, 150)
-                surface.DrawRect(screenW / 2 - barWidth / 2 - 10, voteY - 5, barWidth + 20, barHeight + 10)
-                DrawShadowedText("Map Vote Active - Changing map soon!", textFont, screenW / 2, voteY + 5, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            end
-        elseif GAMEMODE.RoundStartTime > 0 and GAMEMODE.RoundDuration > 0 and not GAMEMODE.MapVoteActive then
+        elseif GAMEMODE.RoundStartTime > 0 and GAMEMODE.RoundDuration > 0 then
             local timeLeft = math.max(0, GAMEMODE.RoundDuration - (CurTime() - GAMEMODE.RoundStartTime))
             local minutes = math.floor(timeLeft / 60)
             local seconds = math.floor(timeLeft % 60)
-            local timeText = "Time Left: " .. minutes .. ":" .. string.format("%02d", seconds)
+            local timeText = "Time left: " .. minutes .. ":" .. string.format("%02d", seconds)
 
             local textColor = timeLeft < 30 and Color(255, 0, 0, 255) or Color(255, 255, 255, 255)
             local pulseAlpha = timeLeft < 30 and (math.sin(CurTime() * 5) * 0.5 + 0.5) * 255 or 255

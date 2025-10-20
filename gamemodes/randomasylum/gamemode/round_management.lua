@@ -39,28 +39,34 @@ if SERVER then
         net.WriteInt(topDeather.deaths, 16)
         net.Broadcast()
 
-        GAMEMODE.IsWaitingForPlayers = true
-        GAMEMODE.RoundStartTime = 0
-        GAMEMODE.RoundDuration = 0
-        GAMEMODE.ShowResultsUntil = CurTime() + 5
+        if timer.Exists("RandomAsylum_BroadcastTimer") then
+            timer.Remove("RandomAsylum_BroadcastTimer")
+        end
 
         net.Start("RandomAsylum_RoundTime")
         net.WriteBool(true)
-        net.WriteInt(#player.GetAll(), 8)
-        net.WriteInt(GAMEMODE.MinPlayers, 8)
+        net.WriteInt(0, 8)
+        net.WriteInt(0, 8)
         net.WriteFloat(0)
         net.WriteInt(0, 32)
         net.Broadcast()
 
-        PrintMessage(HUD_PRINTTALK, "[Random Asylum] Round over! Showing results...")
+        GAMEMODE.IsWaitingForPlayers = false
+        GAMEMODE.MapVoteActive = true
+        GAMEMODE.RoundStartTime = 0
+        GAMEMODE.RoundDuration = 0
+        GAMEMODE.ShowResultsUntil = CurTime() + 5
+
+        PrintMessage(HUD_PRINTTALK, "[Random Asylum] Round over!")
 
         timer.Simple(5, function()
-            if not GAMEMODE.MapVoteActive then
+            if GAMEMODE.MapVoteActive then
                 PrintMessage(HUD_PRINTTALK, "[Random Asylum] Starting mapvote!")
-                GAMEMODE.MapVoteActive = true
+                
                 net.Start("RandomAsylum_MapVoteActive")
                 net.WriteBool(true)
                 net.Broadcast()
+                
                 RunConsoleCommand("mapvote")
             end
         end)
@@ -83,6 +89,26 @@ if SERVER then
 
         PrintMessage(HUD_PRINTTALK, "[Random Asylum] Fight!")
 
+        if timer.Exists("RandomAsylum_BroadcastTimer") then
+            timer.Remove("RandomAsylum_BroadcastTimer")
+        end
+        
+        timer.Create("RandomAsylum_BroadcastTimer", 1, 0, function()
+            net.Start("RandomAsylum_RoundTime")
+            net.WriteBool(GAMEMODE.IsWaitingForPlayers)
+            net.WriteInt(#player.GetAll(), 8)
+            net.WriteInt(GAMEMODE.MinPlayers, 8)
+
+            if not GAMEMODE.IsWaitingForPlayers then
+                net.WriteFloat(CurTime() - GAMEMODE.RoundStartTime)
+                net.WriteInt(GAMEMODE.RoundDuration, 32)
+            else
+                net.WriteFloat(0)
+                net.WriteInt(0, 32)
+            end
+            net.Broadcast()
+        end)
+
         net.Start("RandomAsylum_RoundTime")
         net.WriteBool(false)
         net.WriteInt(#player.GetAll(), 8)
@@ -97,6 +123,37 @@ if SERVER then
         timer.Create("RandomAsylum_RoundTimer", GAMEMODE.RoundDuration, 1, EndRound)
     end
 
+    function GM:EndMapVote()
+        GAMEMODE.MapVoteActive = false
+        GAMEMODE.IsWaitingForPlayers = true
+        
+        net.Start("RandomAsylum_MapVoteActive")
+        net.WriteBool(false)
+        net.Broadcast()
+
+        if timer.Exists("RandomAsylum_BroadcastTimer") then
+            timer.Remove("RandomAsylum_BroadcastTimer")
+        end
+        
+        timer.Create("RandomAsylum_BroadcastTimer", 1, 0, function()
+            net.Start("RandomAsylum_RoundTime")
+            net.WriteBool(GAMEMODE.IsWaitingForPlayers)
+            net.WriteInt(#player.GetAll(), 8)
+            net.WriteInt(GAMEMODE.MinPlayers, 8)
+
+            if not GAMEMODE.IsWaitingForPlayers then
+                net.WriteFloat(CurTime() - GAMEMODE.RoundStartTime)
+                net.WriteInt(GAMEMODE.RoundDuration, 32)
+            else
+                net.WriteFloat(0)
+                net.WriteInt(0, 32)
+            end
+            net.Broadcast()
+        end)
+
+        PrintMessage(HUD_PRINTTALK, "[Random Asylum] Map vote finished! Waiting for players...")
+    end
+
     hook.Add("InitPostEntity", "RandomAsylum_InitWaiting", function()
         GAMEMODE.MinPlayers = GetConVar("ra_min_players"):GetInt()
         GAMEMODE.MapVoteActive = false
@@ -107,7 +164,10 @@ if SERVER then
 
         PrintMessage(HUD_PRINTTALK, "[Random Asylum] Waiting for players... Need at least " .. GAMEMODE.MinPlayers)
 
-        if timer.Exists("RandomAsylum_BroadcastTimer") then timer.Remove("RandomAsylum_BroadcastTimer") end
+        if timer.Exists("RandomAsylum_BroadcastTimer") then
+            timer.Remove("RandomAsylum_BroadcastTimer")
+        end
+        
         timer.Create("RandomAsylum_BroadcastTimer", 1, 0, function()
             net.Start("RandomAsylum_RoundTime")
             net.WriteBool(GAMEMODE.IsWaitingForPlayers)
