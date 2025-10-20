@@ -1,0 +1,47 @@
+"randomasylum"
+{
+    "base"      "sandbox"
+    "title"     "Random Asylum"
+    "description" "I don't know what to write here, just random SWEP"
+    "category"  "other"
+    "menusystem" "1"
+    "settings"
+    {
+        1
+        {
+            "name"      "ra_allow_admin_weapons"
+            "text"      "Allow Admin Weapons"
+            "help"      "If enabled, admin-only weapons can be given randomly"
+            "type"      "CheckBox"
+            "default"   "0"
+            "replicate" "1"
+        }
+        2
+        {
+            "name"      "ra_swep_count"
+            "text"      "SWEP per Player"
+            "help"      "How many random SWEP to give each player on spawn"
+            "type"      "Numeric"
+            "default"   "1"
+            "replicate" "1"
+        }
+        3
+        {
+            "name"      "ra_round_time"
+            "text"      "Round Time (seconds)"
+            "help"      "Duration of each round before mapvote starts"
+            "type"      "Numeric"
+            "default"   "300"
+            "replicate" "1"
+        }
+        4
+        {
+            "name"      "ra_min_players"
+            "text"      "Min Players to Start"
+            "help"      "Minimum players required to start the round"
+            "type"      "Numeric"
+            "default"   "2"
+            "replicate" "1"
+        }
+    }
+}

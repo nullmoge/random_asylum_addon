@@ -1,0 +1,6 @@
+{
+    "title": "Random Asylum",
+    "type": "gamemode",
+    "tags": [ "fun" ],
+    "ignore": [ "*.psd", "*.svn*", "*.git" ]
+}
