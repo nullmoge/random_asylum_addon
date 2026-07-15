@@ -63,7 +63,3 @@ If you enjoy this gamemode and want to support its development, you can donate v
 
 ## Contributing
 Contributions are welcome! Please feel free to submit pull requests or open issues on this repository.
-
-## Credits
-* **Author**: adsk-dev
-* **Website**: [https://adskoe96.github.io/links/](https://adskoe96.github.io/links/)
