@@ -58,8 +58,5 @@ The gamemode automatically excludes certain tools like the physics gun and toolg
 ## License
 This project is licensed under the GNU Affero General Public License v3.0. See the [LICENSE](LICENSE) file for details.
 
-## Support
-If you enjoy this gamemode and want to support its development, you can donate via: [DonationAlerts](https://dalink.to/adskoe95)
-
 ## Contributing
 Contributions are welcome! Please feel free to submit pull requests or open issues on this repository.
